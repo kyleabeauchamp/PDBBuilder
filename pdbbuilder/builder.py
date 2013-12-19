@@ -51,13 +51,9 @@ def build_pdb(sequence, filename, n_cap=None, c_cap=None, ph=7.0):
         top.resName.ix[np.where((top.resName == "NME"))[0]] = "NH2"
         
         traj._topology = mdtraj.Topology.from_dataframe(top, bonds)
-        
-        print(top)
         traj.restrict_atoms(keep_ind)
-        
-        print(top)
+
         top, bonds = traj.top.to_dataframe()
-        print(top)
 
     if n_cap or c_cap:
         traj._topology = mdtraj.Topology.from_dataframe(top, bonds)
