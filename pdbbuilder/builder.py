@@ -2,7 +2,7 @@ from simtk.openmm.app import PDBFile
 import pmx
 import itertools
 import mdtraj
-import pdbfixer
+import pdbfixer.pdbfixer
 import tempfile
 import numpy as np
 
@@ -61,8 +61,8 @@ def build_pdb(sequence, filename, n_cap=None, c_cap=None, ph=7.0):
     traj.save(temp_file.name)  # Save output with fixed element names in caps.
 
     # Now fix missing charged termini.
-    structure = pdbfixer.PdbStructure(open(temp_file.name))
-    fixer = pdbfixer.PDBFixer(structure)
+    #structure = pdbfixer.pdbfixer.PdbStructure(open(temp_file.name))
+    fixer = pdbfixer.pdbfixer.PDBFixer(temp_file.name)
     fixer.findMissingResidues()
     fixer.findNonstandardResidues()
     fixer.replaceNonstandardResidues()
