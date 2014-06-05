@@ -7,12 +7,27 @@ import tempfile
 import numpy as np
 
 def build_pdb(sequence, filename, n_cap=None, c_cap=None, ph=7.0):
+    """Build a PDB from a sequence and save to disk.
+    
+    Parameters
+    ----------
+    sequence : str
+        String representation of protein sequence as 1 letter codes.
+    filename : str
+        name of output filename
+    n_cap : str, optional, default=None
+        Either None or "ACE"
+    c_cap : str, optional, default=None
+        Either None, "NME", or "NH2"
+    ph : float, optional, default=7.0
+        pH to use when building amino acids.
+    """
     chain = pmx.Chain().create(sequence)
     
-    if c_cap:
+    if c_cap is not None:
         chain.add_cterm_cap()
     
-    if n_cap:
+    if n_cap is not None:
         chain.add_nterm_cap()
 
     temp_file = tempfile.NamedTemporaryFile(suffix=".pdb")
@@ -23,15 +38,13 @@ def build_pdb(sequence, filename, n_cap=None, c_cap=None, ph=7.0):
     # Now fix errors in element entries in CAP atoms
     # Also convert 
     traj = mdtraj.load(temp_file.name)
+    top, bonds = traj.top.to_dataframe()
 
-    if n_cap or c_cap:
-        top, bonds = traj.top.to_dataframe()
-
-    if n_cap:
+    if n_cap == "ACE":
         ind = np.where((top.name == "H3")&(top.resName == "ACE"))[0][0]
         top.element.ix[ind] = "H"
 
-    if c_cap:
+    if c_cap in ["NME", "NH2"]:
         ind = np.where((top.name == "H3")&(top.resName == "NME"))[0][0]
         top.element.ix[ind] = "H"
 
