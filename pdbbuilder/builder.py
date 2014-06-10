@@ -6,7 +6,7 @@ import pdbfixer
 import tempfile
 import numpy as np
 
-def build_pdb(sequence, filename, n_cap=None, c_cap=None, ph=7.0):
+def build_pdb(sequence, filename, n_cap=None, c_cap=None, pH=7.0):
     chain = pmx.Chain().create(sequence)
     
     if c_cap:
@@ -68,5 +68,5 @@ def build_pdb(sequence, filename, n_cap=None, c_cap=None, ph=7.0):
     fixer.replaceNonstandardResidues()
     fixer.findMissingAtoms()
     fixer.addMissingAtoms()
-    fixer.addMissingHydrogens(ph)
+    fixer.addMissingHydrogens(pH)
     PDBFile.writeFile(fixer.topology, fixer.positions, open(filename, 'w'))
